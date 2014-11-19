@@ -1,4 +1,0 @@
-PicoEngine
-==========
-
-Game engine project
