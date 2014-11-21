@@ -34,6 +34,18 @@ void PicoVec4f::zero()
     w = 0;
 }
 
+void PicoVec4f::normalize()
+{
+	float r = length();
+	if(r > 0.0)
+	{
+		x /= r;
+		y /= r;
+		z /= r;
+		w /= r;
+	}
+}
+
 void PicoVec4f::operator=(const PicoVec4f& operand)
 {
     x = operand.x;
@@ -77,6 +89,11 @@ void PicoVec4f::operator/=(const float& scalar)
 PicoVec4f PicoVec4f::operator-()
 {
     return PicoVec4f(-x,-y,-z,-w);
+}
+
+PicoVec4f PicoVec4f::conjugate()
+{
+	return PicoVec4f(-x,-y,-z,w);
 }
 
 PicoVec4f PicoVec4f::operator+(const PicoVec4f& operand)
@@ -133,4 +150,17 @@ PicoVec4f PicoVec4f::directProduct(const PicoVec4f& operand)
                      y*operand.y,
                      z*operand.z,
                      w*operand.w);
+}
+
+PicoVec4f PicoVec4f::quaternionProduct(const PicoVec4f& quaternion)
+{
+	return PicoVec4f(x*quaternion.w + y*quaternion.z - z*quaternion.y + w*quaternion.x,
+					-x*quaternion.z + y*quaternion.w + z*quaternion.x + w*quaternion.y,
+					 x*quaternion.y - y*quaternion.x + z*quaternion.w + w*quaternion.z,
+					 -x*quaternion.x - y*quaternion.y - z*quaternion.z + w*quaternion.w);
+}
+
+PicoVec4f PicoVec4f::quaternionRotate(PicoVec4f& quaternion)
+{
+	return quaternion.quaternionProduct((*this).quaternionProduct(quaternion.conjugate()));
 }
